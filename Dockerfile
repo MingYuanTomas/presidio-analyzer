@@ -1,24 +1,33 @@
-FROM python:3.11-slim
+FROM python:3.9-slim
 
 WORKDIR /app
 
-# 安装系统依赖
+# 安装系统依赖和构建工具
 RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
     build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
-# 使用国内镜像源
-RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-RUN pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
-
-# 先单独安装 spacy 并强制使用二进制
-RUN pip install --no-cache-dir --only-binary=all spacy>=3.0.0
-
-# 然后安装其他依赖
+# 复制依赖文件
 COPY requirements.txt .
-RUN pip install --no-cache-dir --only-binary=all -r requirements.txt
 
+# 使用国内镜像源加速安装
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple/ --upgrade pip && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple/ -r requirements.txt
+
+# 复制应用代码
 COPY . .
 
-EXPOSE 8000
+# 预下载模型
+RUN python -c "import stanza; stanza.download('zh')"
+
+# 创建非root用户
+RUN useradd --create-home --shell /bin/bash app && \
+    chown -R app:app /app
+USER app
+
+EXPOSE 5000
+
 CMD ["python", "app.py"]
