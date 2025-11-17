@@ -1,0 +1,4 @@
+presidio-analyzer>=2.2.0
+stanza>=1.4.0
+transformers>=4.20.0
+spacy>=3.0.0
