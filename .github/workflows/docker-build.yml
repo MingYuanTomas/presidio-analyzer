@@ -1,0 +1,29 @@
+name: Build and Push to Aliyun
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to Aliyun Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: registry.cn-hangzhou.aliyuncs.com
+        username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+        password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          registry.cn-hangzhou.aliyuncs.com/mingyuan_cloud_native/presidio-analyzer:latest
+          registry.cn-hangzhou.aliyuncs.com/mingyuan_cloud_native/presidio-analyzer:${{ github.sha }}
