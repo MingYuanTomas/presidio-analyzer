@@ -12,8 +12,8 @@ COPY . .
 # 预下载模型
 
 # 创建非root用户
-RUN chown -R app:app /app
-USER app
+RUN chmod -R 777 /app/
+
 
 EXPOSE 5000
 ENV STANZA_DOWNLOAD_METHOD=none
