@@ -12,8 +12,7 @@ COPY . .
 # 预下载模型
 
 # 创建非root用户
-RUN useradd --create-home --shell /bin/bash app && \
-    chown -R app:app /app
+RUN chown -R app:app /app
 USER app
 
 EXPOSE 5000
