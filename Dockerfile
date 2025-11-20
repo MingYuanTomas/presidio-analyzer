@@ -9,10 +9,6 @@ WORKDIR /app
 # 复制应用代码
 COPY . .
 
-# 预下载模型
-
-# 创建非root用户
-RUN chmod -R 777 /app/
 
 
 EXPOSE 5000
