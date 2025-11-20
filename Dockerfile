@@ -17,5 +17,6 @@ RUN useradd --create-home --shell /bin/bash app && \
 USER app
 
 EXPOSE 5000
-
+ENV STANZA_DOWNLOAD_METHOD=none
+ENV STANZA_RESOURCES_DEVICE=cpu
 CMD ["python", "app.py"]
