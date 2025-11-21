@@ -25,5 +25,5 @@ jobs:
         context: .
         push: true
         tags: |
-          registry.cn-hangzhou.aliyuncs.com/mingyuan_cloud_native/presidio-analyzer:latest
-          registry.cn-hangzhou.aliyuncs.com/mingyuan_cloud_native/presidio-analyzer:${{ github.sha }}
+          registry.cn-hangzhou.aliyuncs.com/mingyuan_cloud_native/presidio-analyzer-python:latest
+
