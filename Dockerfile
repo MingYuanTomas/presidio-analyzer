@@ -5,7 +5,6 @@ WORKDIR /app
 
 # 设置环境变量
 ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
 
 # 安装系统依赖
 RUN apt-get update && apt-get install -y \
@@ -13,15 +12,11 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# 复制依赖文件
-COPY requirements.txt .
+# 先安装基础依赖（不包含 presidio-analyzer）
+RUN pip install --no-cache-dir \
+    stanza==1.8.0 \
+    flask==2.3.3 \
+    gunicorn==21.2.0
 
-# 安装 Python 依赖
-RUN pip install --no-cache-dir -r requirements.txt
-
-# 预下载 Stanza 中文模型（在复制应用代码之前）
-RUN python -c "\
-from presidio_analyzer.nlp_engine import StanzaNlpEngine; \
-nlp_engine = StanzaNlpEngine(models={'zh': 'zh'}); \
-print('Stanza Chinese model downloaded successfully')\
-"
+# 然后安装 presidio-analyzer
+RUN pip install --no-cache-dir presidio-analyzer==2.2.30
